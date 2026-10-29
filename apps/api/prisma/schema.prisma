@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum InstanceStatus {
+  UNKNOWN
+  CONNECTED
+  DISCONNECTED
+  ERROR
+}
+
+enum CampaignKind {
+  STANDARD
+  WARMUP
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  RUNNING
+  PAUSED
+  COMPLETED
+  CANCELLED
+  FAILED
+}
+
+enum RecipientStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+  SKIPPED
+}
+
+enum SendResult {
+  SENT
+  FAILED
+  SKIPPED
+}
+
+enum DevLogLevel {
+  DEBUG
+  INFO
+  WARN
+  ERROR
+}
+
+model EvolutionInstance {
+  id        String         @id @default(cuid())
+  name      String         @unique
+  baseUrl   String
+  apiKey    String
+  status    InstanceStatus @default(UNKNOWN)
+  lastCheck DateTime?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  campaigns Campaign[]
+}
+
+model Contact {
+  id          String   @id @default(cuid())
+  phone       String   @unique
+  name        String?
+  source      String?
+  blockedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  recipients  CampaignRecipient[]
+}
+
+model ContactList {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Campaign {
+  id          String         @id @default(cuid())
+  name        String
+  kind        CampaignKind   @default(STANDARD)
+  status      CampaignStatus @default(DRAFT)
+  instanceId  String
+  instance    EvolutionInstance @relation(fields: [instanceId], references: [id])
+  payload     Json
+  config      Json
+  scheduledAt DateTime?
+  startedAt   DateTime?
+  endedAt     DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  recipients  CampaignRecipient[]
+  sendLogs    SendLog[]
+}
+
+model CampaignRecipient {
+  id          String          @id @default(cuid())
+  campaignId  String
+  campaign    Campaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  contactId   String
+  contact     Contact         @relation(fields: [contactId], references: [id])
+  status      RecipientStatus @default(PENDING)
+  attempts    Int             @default(0)
+  lastError   String?
+  sentAt      DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  sendLogs    SendLog[]
+  @@unique([campaignId, contactId])
+  @@index([campaignId, status])
+}
+
+model SendLog {
+  id          String     @id @default(cuid())
+  campaignId  String
+  campaign    Campaign   @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  recipientId String?
+  recipient   CampaignRecipient? @relation(fields: [recipientId], references: [id], onDelete: SetNull)
+  phone       String
+  result      SendResult
+  reason      String?
+  createdAt   DateTime   @default(now())
+  @@index([campaignId, createdAt])
+}
+
+model DevLog {
+  id          String      @id @default(cuid())
+  level       DevLogLevel @default(INFO)
+  scope       String
+  event       String
+  requestId   String?
+  campaignId  String?
+  details     Json?
+  createdAt   DateTime    @default(now())
+  @@index([createdAt])
+  @@index([campaignId, createdAt])
+}
+
+model AiPersona {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  tone        String
+  rules       Json
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MessageTemplate {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  content     Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+

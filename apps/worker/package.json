@@ -1,0 +1,21 @@
+{
+  "name": "@whatsapp/worker",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "tsx watch src/worker.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/worker.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.1.0",
+    "@whatsapp/core": "*",
+    "dotenv": "^16.4.7",
+    "pg-boss": "^10.1.6"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
+

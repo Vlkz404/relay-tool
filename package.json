@@ -1,0 +1,18 @@
+{
+  "name": "whatsapp-control-center",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "concurrently -n web,api,worker -c cyan,green,yellow \"npm run dev -w @whatsapp/web\" \"npm run dev -w @whatsapp/api\" \"npm run dev -w @whatsapp/worker\"",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "db:up": "docker compose up -d database",
+    "db:down": "docker compose down",
+    "db:migrate": "npm run db:migrate -w @whatsapp/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
+
