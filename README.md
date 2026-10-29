@@ -51,10 +51,3 @@ alterações. Nunca grave chaves reais em código, `.env.example` ou commits.
 - **Logs de envio**: somente sucesso/falha de cada tentativa.
 - **Logs de desenvolvimento**: chamadas internas/externas, duração, erros e
   payloads sanitizados. Credenciais jamais são armazenadas nesse log.
-
-## Migração do script antigo
-
-As funções existentes devem ser migradas para `packages/core/src` aos poucos.
-Não copie o menu CLI, PID ou arquivos `status.json`: converta cada fluxo para
-serviços puros e persistência no banco.
-
