@@ -1,4 +1,4 @@
-/* ===== Variáveis e reset ===== */
+/* ===== Variables and reset ===== */
 :root {
   color-scheme: dark;
   --bg: #10151d;
@@ -89,7 +89,7 @@ nav button:hover {
   color: white;
 }
 
-/* ===== Cabeçalho da página ===== */
+/* ===== Page Header ===== */
 header {
   display: flex;
   align-items: start;
@@ -115,7 +115,7 @@ h2 {
   letter-spacing: 0.12em;
 }
 
-/* ===== Botões ===== */
+/* ===== Buttons ===== */
 .primary {
   background: var(--accent);
   color: #102018;
@@ -126,7 +126,7 @@ h2 {
   white-space: nowrap;
 }
 
-/* ===== Grids e cards ===== */
+/* ===== Grids & cards ===== */
 .cards,
 .grid {
   display: grid;
@@ -176,7 +176,7 @@ h2 {
   cursor: pointer;
 }
 
-/* ===== Responsivo ===== */
+/* ===== Responsive ===== */
 @media (max-width: 700px) {
   .shell {
     grid-template-columns: 1fr;
